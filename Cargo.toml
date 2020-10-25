@@ -1,0 +1,10 @@
+[package]
+name = "donuts"
+version = "0.1.0"
+authors = ["Cedric Hutchings <cedhut02@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+macroquad = { version = "=0.3.0-alpha.6", path = "../macroquad" }
