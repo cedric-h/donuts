@@ -24,7 +24,7 @@ impl Car {
     }
     
     pub fn angle(&self) -> f32 {
-        vec_to_angle(self.vel).to_degrees() + 90.0
+        -(vec_to_angle(self.vel).to_degrees() + 90.0)
     }
 
     pub fn controls(&mut self) {
@@ -57,8 +57,8 @@ impl Car {
         }
             
         match (is_key_down(KeyCode::D), is_key_down(KeyCode::A)) {
-            (true, false) => *dir = angle_to_vec(angle + PI/256.0 * *speed/MAX_SPEED),
-            (false, true) => *dir = angle_to_vec(angle - PI/256.0 * *speed/MAX_SPEED),
+            (true, false) => *dir = angle_to_vec(angle + PI/216.0 * (*speed/MAX_SPEED).min(1.0)),
+            (false, true) => *dir = angle_to_vec(angle - PI/216.0 * (*speed/MAX_SPEED).min(1.0)),
             _ => {}
         }
 

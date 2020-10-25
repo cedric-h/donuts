@@ -13,15 +13,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e8fd72866655d1904d6b0997d0b07ba561047d070fbe29de039031c641b61217"
 
 [[package]]
-name = "approx"
-version = "0.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0e60b75072ecd4168020818c0107f2857bb6c4e64252d8d3983f6263b40a5c3"
-dependencies = [
- "num-traits",
-]
-
-[[package]]
 name = "autocfg"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -133,13 +124,13 @@ checksum = "2448f6066e80e3bfc792e9c98bf705b4b0fc6e8ef5b43e5889aff0eaa9c58743"
 
 [[package]]
 name = "macroquad"
-version = "0.3.0-alpha.6"
+version = "0.3.0-alpha.8"
+source = "git+https://github.com/cedric-h/macroquad.git?branch=noskew2#c0628596b8cd12b72e0d02ea1f1ab83c07335bd3"
 dependencies = [
  "fontdue",
  "glam",
  "image",
  "macroquad_macro",
- "megaui",
  "miniquad",
  "quad-gl",
  "quad-rand",
@@ -148,13 +139,7 @@ dependencies = [
 [[package]]
 name = "macroquad_macro"
 version = "0.1.0"
-
-[[package]]
-name = "megaui"
-version = "0.2.13"
-dependencies = [
- "miniquad_text_rusttype",
-]
+source = "git+https://github.com/cedric-h/macroquad.git?branch=noskew2#c0628596b8cd12b72e0d02ea1f1ab83c07335bd3"
 
 [[package]]
 name = "miniquad"
@@ -169,15 +154,6 @@ dependencies = [
  "sapp-linux",
  "sapp-wasm",
  "sapp-windows",
-]
-
-[[package]]
-name = "miniquad_text_rusttype"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3223bd0dbc43a241228209464f995a7a6a86d64865459a8f1b8870890c6caea7"
-dependencies = [
- "rusttype 0.7.9",
 ]
 
 [[package]]
@@ -222,15 +198,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ordered-float"
-version = "1.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3741934be594d77de1c8461ebcbbe866f585ea616a9753aa78f2bdc69f0e4579"
-dependencies = [
- "num-traits",
-]
-
-[[package]]
 name = "png"
 version = "0.15.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -245,6 +212,7 @@ dependencies = [
 [[package]]
 name = "quad-gl"
 version = "0.2.9"
+source = "git+https://github.com/cedric-h/macroquad.git?branch=noskew2#c0628596b8cd12b72e0d02ea1f1ab83c07335bd3"
 dependencies = [
  "glam",
  "image",
@@ -256,26 +224,6 @@ name = "quad-rand"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ec3e8eb9b1d9b58a43bac8f20985768ddcc03b928a909d4d39ced327b971fec5"
-
-[[package]]
-name = "rusttype"
-version = "0.7.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "310942406a39981bed7e12b09182a221a29e0990f3e7e0c971f131922ed135d5"
-dependencies = [
- "rusttype 0.8.3",
-]
-
-[[package]]
-name = "rusttype"
-version = "0.8.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f61411055101f7b60ecf1041d87fb74205fb20b0c7a723f07ef39174cf6b4c0"
-dependencies = [
- "approx",
- "ordered-float",
- "stb_truetype",
-]
 
 [[package]]
 name = "sapp-android"
@@ -335,15 +283,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c75fefcab562b5cb185b8ec060b5491631a899692e2e1ebead321fc31cc9c587"
 dependencies = [
  "winapi",
-]
-
-[[package]]
-name = "stb_truetype"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f77b6b07e862c66a9f3e62a07588fee67cd90a9135a2b942409f195507b4fb51"
-dependencies = [
- "byteorder",
 ]
 
 [[package]]
