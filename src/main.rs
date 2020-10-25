@@ -37,18 +37,14 @@ async fn main() {
 
         clear_background(WHITE);
 
-        let mut cam = Camera2D {
+        set_camera(Camera2D {
             target: car.pos,
             rotation: car.angle(),
             zoom: vec2(1.0, -screen_width() / screen_height()) / 8.0,
             ..Default::default()
-        };
-        set_camera(cam);
+        });
 
         map.draw();
-
-        cam.rotation = 0.0;
-        set_camera(cam);
         car.draw();
 
         next_frame().await

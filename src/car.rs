@@ -67,9 +67,8 @@ impl Car {
     }
 
     pub fn draw(&self) {
-        let &Self { tex, pos, vel, dir, .. } = self;
+        let &Self { tex, pos, dir, .. } = self;
         let tex_size = vec2(tex.width(), tex.height()) * 0.125;
-        let rot = vel.angle_between(dir);
         let (x, y) = (pos - tex_size / 2.0).into();
         draw_texture_ex(
             tex,
@@ -77,7 +76,7 @@ impl Car {
             y,
             WHITE,
             DrawTextureParams {
-                rotation: if rot.is_nan() { 0.0 } else { rot },
+                rotation: vec_to_angle(dir) + std::f32::consts::FRAC_PI_2,
                 dest_size: Some(tex_size),
                 ..Default::default()
             }
