@@ -49,7 +49,7 @@ impl Car {
         -(vec_to_angle(self.vel).to_degrees() + 90.0)
     }
 
-    pub fn controls(&mut self) {
+    pub fn controls(&mut self, friction: f32) {
         use std::f32::consts::PI;
         const MAX_SPEED: f32 = 0.075;
         let Self { speed, throttle_slide, dir, pos, vel, .. } = self;
