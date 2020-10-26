@@ -1,13 +1,35 @@
 use macroquad::prelude::*;
 use super::vec::*;
 
+fn smoothstep(x: f32) -> f32 {
+    if x < 0.0 {
+        0.0
+    } else if x > 1.0 {
+        1.0
+    } else {
+        3.0 * x.powi(2) - 2.0 * x.powi(3)
+    }
+}
+
+#[derive(Copy, Clone)]
+enum ThrottleSlide {
+    Back {
+        start: f64,
+        forward_time: f64,
+    },
+    Forward {
+        start: f64,
+    },
+    Nah
+}
+
 pub struct Car {
     pub tex: Texture2D,
     pub pos: Vec2,
     pub dir: Vec2,
     speed: f32,
     vel: Vec2,
-    throttle_time: Option<f64>,
+    throttle_slide: ThrottleSlide,
 }
 impl Car {
     pub fn new(tex: Texture2D) -> Self {
@@ -19,7 +41,7 @@ impl Car {
             dir: vec2(1.0, 0.0),
             vel: vec2(0.0, 0.0),
             speed: 0.0,
-            throttle_time: None,
+            throttle_slide: ThrottleSlide::Nah,
         }
     }
     
@@ -29,37 +51,61 @@ impl Car {
 
     pub fn controls(&mut self) {
         use std::f32::consts::PI;
-        const MAX_SPEED: f32 = 0.05;
-        let Self { speed, throttle_time, dir, pos, vel, .. } = self;
+        const MAX_SPEED: f32 = 0.075;
+        let Self { speed, throttle_slide, dir, pos, vel, .. } = self;
         let angle = vec_to_angle(*dir);
 
-        if is_key_down(KeyCode::W) {
-            let throttle = match throttle_time {
-                Some(x) => {
-                    let t = (get_time() - *x) as f32;
-                    (t / 0.8).sqrt().min(1.0)
-                },
-                None => {
-                    *throttle_time = Some(get_time());
-                    0.0
-                }
+        *throttle_slide = match (is_key_down(KeyCode::W), *throttle_slide) {
+            (true, ThrottleSlide::Nah) => ThrottleSlide::Forward {
+                start: get_time()
+            },
+            (true, ThrottleSlide::Back { start, forward_time }) => ThrottleSlide::Forward {
+                start: get_time() - (forward_time - (get_time() - start)).max(0.0),
+            },
+            (false, ThrottleSlide::Forward { start }) => ThrottleSlide::Back {
+                start: get_time(),
+                forward_time: (get_time() - start).min(4.0),
+            },
+            (_, o) => o,
+        };
+
+        let throttle = {
+            let t = match *throttle_slide {
+                ThrottleSlide::Forward { start } => (get_time() - start) as f32,
+                ThrottleSlide::Back { forward_time, start } => (forward_time - (get_time() - start) * 2.0).max(0.0) as f32,
+                ThrottleSlide::Nah => 0.0
             };
 
-            *speed = MAX_SPEED * throttle;
-            *vel += *dir * throttle;
-            *vel = if vel.length_squared() != 0.0 {
-                vel.normalize()
+            const ZERO_TO_PLATEAU: f32 = 0.7;
+            const PLATEAU: f32 = 0.5;
+            const MAX_START: f32 = 2.0;
+            const PLATEAU_TO_MAX: f32 = 2.2;
+            const MAX: f32 = 1.0;
+            if t < ZERO_TO_PLATEAU {
+                smoothstep(t / ZERO_TO_PLATEAU) * PLATEAU
+            } else if t > MAX_START {
+                smoothstep((t - MAX_START) / PLATEAU_TO_MAX) * (MAX - PLATEAU) + PLATEAU
             } else {
-                *vel
-            };
+                PLATEAU
+            }
+        };
+
+        *speed = MAX_SPEED * throttle * ((vel.dot(*dir) - 0.87).max(0.0) / 0.1);
+        *vel += *dir * 0.04 * throttle;
+
+        *vel = if vel.length_squared() != 0.0 {
+            vel.normalize()
         } else {
-            *throttle_time = None;
-        }
+            *vel
+        };
             
-        match (is_key_down(KeyCode::D), is_key_down(KeyCode::A)) {
-            (true, false) => *dir = angle_to_vec(angle + PI/216.0 * (*speed/MAX_SPEED).min(1.0)),
-            (false, true) => *dir = angle_to_vec(angle - PI/216.0 * (*speed/MAX_SPEED).min(1.0)),
-            _ => {}
+        let (l, r) = (is_key_down(KeyCode::D), is_key_down(KeyCode::A));
+        if l ^ r {
+            *dir = angle_to_vec(
+                angle + PI/216.0
+                    * (*speed / MAX_SPEED).min(1.0)
+                    * if r { -1.0 } else { 1.0 },
+            );
         }
 
         *speed *= 0.98;
