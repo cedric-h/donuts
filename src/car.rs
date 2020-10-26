@@ -108,7 +108,7 @@ impl Car {
             );
         }
 
-        *speed *= 0.98;
+        *speed *= 0.99;
         *pos += *vel * *speed;
     }
 
