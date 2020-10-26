@@ -91,7 +91,7 @@ impl Car {
         };
 
         *speed = MAX_SPEED * throttle * ((vel.dot(*dir) - 0.87).max(0.0) / 0.1);
-        *vel += *dir * 0.04 * throttle;
+        *vel += *dir * 0.1 * throttle;
 
         *vel = if vel.length_squared() != 0.0 {
             vel.normalize()

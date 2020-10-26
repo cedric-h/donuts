@@ -28,7 +28,7 @@ async fn main() {
 
     loop {
         // friction is passed in here
-        car.controls(0.99);
+        car.controls(map.terrain_friction(car.pos));
 
         clear_background(WHITE);
 
