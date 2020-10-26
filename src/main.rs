@@ -24,9 +24,7 @@ async fn main() {
     let mut car = Car::new(load_texture("car.png").await);
     let map = Map;
     car.pos = map.car_spawn();
-    let can = Can {
-        pos: map.car_spawn() - vec2(-1.0, 4.3),
-    };
+    let cans: Vec<Can> = map.can_spots().map(|pos| Can { pos }).collect();
 
     loop {
         car.controls();
@@ -50,7 +48,7 @@ async fn main() {
 
         map.draw();
         car.draw();
-        can.draw();
+        for can in &cans { can.draw() };
 
         next_frame().await
     }
