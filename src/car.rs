@@ -108,7 +108,7 @@ impl Car {
             );
         }
 
-        *speed *= 0.99;
+        *speed *= friction;
         *pos += *vel * *speed;
     }
 

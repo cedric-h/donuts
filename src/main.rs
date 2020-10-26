@@ -27,7 +27,8 @@ async fn main() {
     let cans: Vec<Can> = map.can_spots().map(|pos| Can { pos }).collect();
 
     loop {
-        car.controls();
+        // friction is passed in here
+        car.controls(0.99);
 
         clear_background(WHITE);
 
