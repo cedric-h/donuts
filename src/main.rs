@@ -21,9 +21,10 @@ async fn main() {
     let mut cans = Cantainer::new(map.can_spots().map(|pos| Can::new(pos)).collect());
 
     loop {
-        // friction is passed in here
-        car.controls(0.99);
-        for can in &mut *cans { can.slide(0.99) }
+        car.controls(map.terrain_friction(car.pos));
+        for can in &mut *cans {
+            can.slide(map.terrain_friction(can.pos))
+        }
 
         clear_background(WHITE);
 

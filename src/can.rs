@@ -3,7 +3,7 @@ use super::{Circle, ArenaKey};
 
 #[derive(Clone)]
 pub struct Can {
-    pos: Vec2,
+    pub pos: Vec2,
     vel: Vec2,
 }
 impl Can {

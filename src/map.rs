@@ -1,9 +1,13 @@
 use macroquad::prelude::*;
-use std::f32::consts::{TAU, PI, FRAC_PI_2};
+use std::f32::consts::{TAU, FRAC_PI_2};
 use super::vec::*;
 
 const TRACK_RADIUS: f32 = 35.0;
 const TRACK_WIDTH: f32 = 10.0;
+#[cfg(feature = "donutvision")]
+const ROAD_3DNESS: f32 = 1.0;
+#[cfg(not(feature = "donutvision"))]
+const ROAD_3DNESS: f32 = 0.175;
 
 pub struct Map;
 impl Map {
@@ -14,15 +18,10 @@ impl Map {
     }
     
     fn track(&self) {
-        #[cfg(feature = "donutvision")]
-        const ROAD_THICKNESS: f32 = 1.0;
-        #[cfg(not(feature = "donutvision"))]
-        const ROAD_THICKNESS: f32 = 0.175;
-
-        draw_circle(0.0, -ROAD_THICKNESS, TRACK_RADIUS, DARKGRAY);
+        draw_circle(0.0, -ROAD_3DNESS, TRACK_RADIUS, DARKGRAY);
         draw_circle(0.0,  0.0, TRACK_RADIUS, GRAY);
         draw_circle(0.0,  0.0, TRACK_RADIUS - TRACK_WIDTH, DARKGRAY);
-        draw_circle(0.0, -ROAD_THICKNESS, TRACK_RADIUS - TRACK_WIDTH, WHITE);
+        draw_circle(0.0, -ROAD_3DNESS, TRACK_RADIUS - TRACK_WIDTH, WHITE);
     }
 
     pub fn lines(&self) {
@@ -66,5 +65,15 @@ impl Map {
             angle_to_vec((i as f32 / MAX as f32) * TAU)
                 * (TRACK_RADIUS - (TRACK_WIDTH * [-0.35, 0.3][i % 2]) - (TRACK_WIDTH / 2.0))
         })
+    }
+
+    pub fn terrain_friction(&self, pos: Vec2) -> f32 {
+        if pos.length() < TRACK_RADIUS - TRACK_WIDTH {
+            0.9
+        } else if pos.length() > TRACK_RADIUS {
+            0.9
+        } else {
+            1.0
+        }
     }
 }
