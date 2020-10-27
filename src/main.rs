@@ -5,30 +5,25 @@ use map::Map;
 mod vec;
 mod car;
 use car::Car;
-
-struct Can {
-    pos: Vec2,
-}
-impl Can {
-    fn draw(&self) {
-        let &Self { pos } = self;
-        let (x, y) = pos.into();
-        draw_circle(x, y, 0.5, DARKBROWN);
-        draw_rectangle(x, y - 0.5, 0.44, 1.0, DARKBROWN);
-        draw_circle(x + 0.44, y, 0.5, BROWN);
-    }
-}
+mod circle;
+use circle::{Circle, Collision, CircleArena, ArenaKey};
+mod can;
+use can::{Can, Cantainer};
 
 #[macroquad::main("donuts")]
 async fn main() {
-    let mut car = Car::new(load_texture("car.png").await);
+    let mut arena = CircleArena::new();
     let map = Map;
-    car.pos = map.car_spawn();
-    let cans: Vec<Can> = map.can_spots().map(|pos| Can { pos }).collect();
+    let mut car = Car {
+        pos: map.car_spawn(),
+        ..Car::new(load_texture("car.png").await)
+    };
+    let mut cans = Cantainer::new(map.can_spots().map(|pos| Can::new(pos)).collect());
 
     loop {
         // friction is passed in here
         car.controls(0.99);
+        for can in &mut *cans { can.slide(0.99) }
 
         clear_background(WHITE);
 
@@ -49,7 +44,15 @@ async fn main() {
 
         map.draw();
         car.draw();
-        for can in &cans { can.draw() };
+        cans.draw();
+
+        arena.collide(car.circles().chain(cans.circles()));
+        for Collision { members, normal, .. } in arena.collided() {
+            match members {
+                [_, ArenaKey::Can(i)] => cans[i].knockback(-normal),
+                _ => {},
+            }
+        }
 
         next_frame().await
     }

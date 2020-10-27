@@ -1,5 +1,5 @@
 use macroquad::prelude::*;
-use super::vec::*;
+use super::{Circle, vec::*};
 
 fn smoothstep(x: f32) -> f32 {
     if x < 0.0 {
@@ -12,7 +12,7 @@ fn smoothstep(x: f32) -> f32 {
 }
 
 #[derive(Copy, Clone)]
-enum ThrottleSlide {
+pub enum ThrottleSlide {
     Back {
         start: f64,
         forward_time: f64,
@@ -27,9 +27,9 @@ pub struct Car {
     pub tex: Texture2D,
     pub pos: Vec2,
     pub dir: Vec2,
-    speed: f32,
-    vel: Vec2,
-    throttle_slide: ThrottleSlide,
+    pub speed: f32,
+    pub vel: Vec2,
+    pub throttle_slide: ThrottleSlide,
 }
 impl Car {
     pub fn new(tex: Texture2D) -> Self {
@@ -43,6 +43,16 @@ impl Car {
             speed: 0.0,
             throttle_slide: ThrottleSlide::Nah,
         }
+    }
+
+    pub fn circles(&self) -> impl Iterator<Item = Circle> {
+        std::iter::once(
+            Circle {
+                pos: self.pos + self.dir * 0.62,
+                radius: 0.775,
+                key: super::ArenaKey::Car,
+            },
+        )
     }
     
     pub fn angle(&self) -> f32 {
