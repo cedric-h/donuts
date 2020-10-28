@@ -10,4 +10,4 @@ showcollision = []
 
 [dependencies]
 macroquad = { git = "https://github.com/not-fl3/macroquad.git" }
-megaui-macroquad = "0.1.1"
+megaui-macroquad = { git="https://github.com/not-fl3/megaui-macroquad" }
