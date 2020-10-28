@@ -1,5 +1,5 @@
+use super::{math::*, ArenaKey, Can, Circle};
 use macroquad::prelude::*;
-use super::{Can, Circle, ArenaKey, math::*};
 use std::f32::consts::{FRAC_2_PI, FRAC_PI_2};
 
 /// How deep in he claw what's being held should go.
@@ -31,7 +31,9 @@ pub enum Hook {
 }
 impl Hook {
     pub fn new() -> Self {
-        Hook::Ready { facing: Vec2::unit_x() }
+        Hook::Ready {
+            facing: Vec2::unit_x(),
+        }
     }
 
     pub fn face(&mut self, dock: Vec2, goal: Vec2) {
@@ -52,7 +54,11 @@ impl Hook {
 
     pub fn retract(&mut self) {
         use Hook::*;
-        if let Launched { pos, facing, .. } | Locked { end: pos, facing, .. } = *self {
+        if let Launched { pos, facing, .. }
+        | Locked {
+            end: pos, facing, ..
+        } = *self
+        {
             *self = Retracting {
                 reached: pos,
                 pos,
@@ -64,21 +70,27 @@ impl Hook {
 
     pub fn fly(&mut self, dock: Vec2) {
         match self {
-            Hook::Launched { vel, pos, facing, } => {
+            Hook::Launched { vel, pos, facing } => {
                 *vel *= 0.82;
                 *pos += *facing * *vel;
                 if *vel < 0.00001 {
                     self.retract()
                 }
-            },
-            Hook::Retracting { pos, facing, reached, started, .. } => {
+            }
+            Hook::Retracting {
+                pos,
+                facing,
+                reached,
+                started,
+                ..
+            } => {
                 let delta = smoothstep((get_time() - *started) as f32);
                 *pos = reached.lerp(dock, delta);
                 if delta >= 1.0 {
                     *self = Hook::Ready { facing: *facing };
                 }
             }
-            _ => {},
+            _ => {}
         }
     }
 
@@ -97,7 +109,14 @@ impl Hook {
     }
 
     pub fn drag(&mut self, dock: Vec2, can: &mut Can) {
-        if let Hook::Locked { end, facing, chain_length, vel, .. } = self {
+        if let Hook::Locked {
+            end,
+            facing,
+            chain_length,
+            vel,
+            ..
+        } = self
+        {
             // drag hook towards car
             let delta = *end - dock;
             let hook_dist = delta.length();
@@ -138,7 +157,12 @@ impl Hook {
                 fn tri(base: Vec2, x: Vec2, y: Vec2, z: Vec2) {
                     draw_triangle(x + base, y + base, z + base, LIGHTGRAY)
                 }
-                tri(base, angle_to_vec(tip) * 0.92, claw_blade * 0.34, Vec2::zero());
+                tri(
+                    base,
+                    angle_to_vec(tip) * 0.92,
+                    claw_blade * 0.34,
+                    Vec2::zero(),
+                );
             };
             let (x, y) = (dock + facing * 0.05).into();
             draw_circle(x, y, 0.17, LIGHTGRAY);
@@ -152,10 +176,15 @@ impl Hook {
         let squeeze = ((get_time() * 7.5).sin() as f32) * 0.01;
         match *self {
             Hook::Ready { facing } => hook(dock, facing, squeeze),
-            Hook::Retracting { started, pos, facing, .. } => hook(
+            Hook::Retracting {
+                started,
                 pos,
                 facing,
-                lerp(-0.4, 0.0, smoothstep((get_time() - started) as f32)) + squeeze
+                ..
+            } => hook(
+                pos,
+                facing,
+                lerp(-0.4, 0.0, smoothstep((get_time() - started) as f32)) + squeeze,
             ),
             Hook::Launched { pos, facing, .. } => hook(pos, facing, -0.4 + squeeze),
             Hook::Locked { end, facing, .. } => hook(end, facing, -0.435),
@@ -199,7 +228,7 @@ impl Hook {
             Hook::Launched { pos, .. } => chain(dock, pos),
             Hook::Retracting { pos, .. } => chain(dock, pos),
             Hook::Locked { end, .. } => chain(dock, end),
-            _ => {},
+            _ => {}
         }
     }
 

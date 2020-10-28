@@ -40,9 +40,9 @@ fn angle_to_vec_to_angle() {
         assert_f32_eq!(vec_to_angle(angle_to_vec(angle)), angle);
     }
 
-    test_angle(PI/4.0);
-    test_angle(-PI/4.0);
-    test_angle(PI/2.0);
+    test_angle(PI / 4.0);
+    test_angle(-PI / 4.0);
+    test_angle(PI / 2.0);
 }
 
 #[test]
@@ -101,8 +101,7 @@ pub fn slerp(q1: Vec2, q0: Vec2, t: f32) -> Vec2 {
                                         * (1.0
                                             + ts[4]
                                                 * (1.0
-                                                    + ts[5]
-                                                        * (1.0 + ts[6] * (1.0 + ts[7]))))))));
+                                                    + ts[5] * (1.0 + ts[6] * (1.0 + ts[7]))))))));
 
     let f1 = d
         * (1.0
@@ -116,8 +115,7 @@ pub fn slerp(q1: Vec2, q0: Vec2, t: f32) -> Vec2 {
                                         * (1.0
                                             + ds[4]
                                                 * (1.0
-                                                    + ds[5]
-                                                        * (1.0 + ds[6] * (1.0 + ds[7]))))))));
+                                                    + ds[5] * (1.0 + ds[6] * (1.0 + ds[7]))))))));
 
     q0 * f0 + q1 * f1
 }

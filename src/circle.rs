@@ -31,7 +31,9 @@ impl CircleArena {
     }
 
     pub fn collide(&mut self, new_circles: impl Iterator<Item = Circle>) {
-        let Self { circles, collided, .. } = self;
+        let Self {
+            circles, collided, ..
+        } = self;
         circles.clear();
         circles.extend(new_circles);
 

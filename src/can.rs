@@ -1,5 +1,5 @@
+use super::{ArenaKey, Circle};
 use macroquad::prelude::*;
-use super::{Circle, ArenaKey};
 
 #[derive(Clone)]
 pub struct Can {
@@ -50,12 +50,11 @@ impl Cantainer {
     pub fn draw(&mut self) {
         use std::cmp::Ordering;
         self.temp = self.cans.clone();
-        self.temp.sort_by(|a, b| {
-            b.pos.x()
-                .partial_cmp(&a.pos.x())
-                .unwrap_or(Ordering::Less)
-        });
-        for can in &self.temp { can.draw() };
+        self.temp
+            .sort_by(|a, b| b.pos.x().partial_cmp(&a.pos.x()).unwrap_or(Ordering::Less));
+        for can in &self.temp {
+            can.draw()
+        }
     }
 
     pub fn circles(&self) -> impl Iterator<Item = Circle> + '_ {
@@ -78,4 +77,3 @@ impl std::ops::DerefMut for Cantainer {
         &mut self.cans
     }
 }
-

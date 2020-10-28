@@ -1,5 +1,5 @@
+use super::{math::*, Circle};
 use macroquad::prelude::*;
-use super::{Circle, math::*};
 
 fn smoothstep(x: f32) -> f32 {
     if x < 0.0 {
@@ -13,14 +13,9 @@ fn smoothstep(x: f32) -> f32 {
 
 #[derive(Copy, Clone)]
 pub enum ThrottleSlide {
-    Back {
-        start: f64,
-        forward_time: f64,
-    },
-    Forward {
-        start: f64,
-    },
-    Nah
+    Back { start: f64, forward_time: f64 },
+    Forward { start: f64 },
+    Nah,
 }
 
 pub struct Car {
@@ -50,14 +45,15 @@ impl Car {
             pos: self.pos + self.dir * 0.62,
             radius: 0.515,
             key: super::ArenaKey::Car,
-        }).chain(std::iter::once(Circle {
+        })
+        .chain(std::iter::once(Circle {
             pos: self.pos - self.dir * 0.65,
             radius: 0.515,
             key: super::ArenaKey::Car,
         }))
         .into_iter()
     }
-    
+
     pub fn angle(&self) -> f32 {
         -(vec_to_angle(self.vel).to_degrees() + 90.0)
     }
@@ -70,14 +66,25 @@ impl Car {
     pub fn controls(&mut self, friction: f32) {
         use std::f32::consts::PI;
         const MAX_SPEED: f32 = 0.175;
-        let Self { speed, throttle_slide, dir, pos, vel, .. } = self;
+        let Self {
+            speed,
+            throttle_slide,
+            dir,
+            pos,
+            vel,
+            ..
+        } = self;
         let angle = vec_to_angle(*dir);
 
         *throttle_slide = match (is_key_down(KeyCode::W), *throttle_slide) {
-            (true, ThrottleSlide::Nah) => ThrottleSlide::Forward {
-                start: get_time()
-            },
-            (true, ThrottleSlide::Back { start, forward_time }) => ThrottleSlide::Forward {
+            (true, ThrottleSlide::Nah) => ThrottleSlide::Forward { start: get_time() },
+            (
+                true,
+                ThrottleSlide::Back {
+                    start,
+                    forward_time,
+                },
+            ) => ThrottleSlide::Forward {
                 start: get_time() - (forward_time - (get_time() - start)).max(0.0),
             },
             (false, ThrottleSlide::Forward { start }) => ThrottleSlide::Back {
@@ -90,8 +97,11 @@ impl Car {
         let throttle = {
             let t = match *throttle_slide {
                 ThrottleSlide::Forward { start } => (get_time() - start) as f32,
-                ThrottleSlide::Back { forward_time, start } => (forward_time - (get_time() - start) * 2.0).max(0.0) as f32,
-                ThrottleSlide::Nah => 0.0
+                ThrottleSlide::Back {
+                    forward_time,
+                    start,
+                } => (forward_time - (get_time() - start) * 2.0).max(0.0) as f32,
+                ThrottleSlide::Nah => 0.0,
             };
 
             const ZERO_TO_PLATEAU: f32 = 0.7;
@@ -116,13 +126,11 @@ impl Car {
         } else {
             *vel
         };
-            
+
         let (l, r) = (is_key_down(KeyCode::D), is_key_down(KeyCode::A));
         if l ^ r {
             *dir = angle_to_vec(
-                angle + PI/216.0
-                    * (*speed / MAX_SPEED).min(1.0)
-                    * if r { -1.0 } else { 1.0 },
+                angle + PI / 216.0 * (*speed / MAX_SPEED).min(1.0) * if r { -1.0 } else { 1.0 },
             );
         }
 
@@ -143,7 +151,7 @@ impl Car {
                 rotation: vec_to_angle(dir) + std::f32::consts::FRAC_PI_2,
                 dest_size: Some(tex_size),
                 ..Default::default()
-            }
+            },
         );
     }
 }

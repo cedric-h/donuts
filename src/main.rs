@@ -2,15 +2,17 @@ use macroquad::prelude::*;
 
 mod map;
 use map::Map;
-mod math;
 mod car;
+mod math;
 use car::Car;
 mod circle;
-use circle::{Circle, Collision, CircleArena, ArenaKey};
+use circle::{ArenaKey, Circle, CircleArena, Collision};
 mod can;
 use can::{Can, Cantainer};
 mod hook;
 use hook::Hook;
+mod debug;
+use debug::*;
 
 #[cfg(not(feature = "donutvision"))]
 const ZOOM: f32 = 8.0;
@@ -27,6 +29,7 @@ async fn main() {
     };
     let mut hook = Hook::new();
     let mut cans = Cantainer::new(map.can_spots().map(|pos| Can::new(pos)).collect());
+    let mut debug = false;
 
     loop {
         clear_background(WHITE);
@@ -40,7 +43,9 @@ async fn main() {
         };
 
         match hook {
-            Hook::Ready { .. } => hook.face(car.dock(), cam.screen_to_world(mouse_position().into())),
+            Hook::Ready { .. } => {
+                hook.face(car.dock(), cam.screen_to_world(mouse_position().into()))
+            }
             Hook::Launched { .. } | Hook::Retracting { .. } => hook.fly(car.dock()),
             Hook::Locked { can_index: i, .. } => hook.drag(car.dock(), &mut cans[i]),
         }
@@ -52,8 +57,16 @@ async fn main() {
             match hook {
                 Hook::Ready { .. } => hook.launch(car.dock()),
                 Hook::Locked { can_index: i, .. } => hook.release(&mut cans[i]),
-                _ => {},
+                _ => {}
             }
+        }
+
+        if is_key_pressed(KeyCode::Backslash) {
+            debug = true;
+        }
+
+        if debug {
+            debug::draw();
         }
 
         set_camera(cam);
@@ -69,12 +82,20 @@ async fn main() {
         }
 
         arena.collide(car.circles().chain(cans.circles()).chain(hook.circles()));
-        for Collision { members, normal, depth, .. } in arena.collided() {
+        for Collision {
+            members,
+            normal,
+            depth,
+            ..
+        } in arena.collided()
+        {
             match members {
                 [ArenaKey::Hook, ArenaKey::Can(i)] => hook.lock(car.dock(), i, &mut cans[i]),
-                [ArenaKey::Can(i), ArenaKey::Hook] if cans[i].vel.length() < 0.5 => cans[i].knockback(normal * 0.1),
+                [ArenaKey::Can(i), ArenaKey::Hook] if cans[i].vel.length() < 0.5 => {
+                    cans[i].knockback(normal * 0.1)
+                }
                 [ArenaKey::Can(i), _] => cans[i].knockback(normal * depth),
-                _ => {},
+                _ => {}
             }
         }
 
