@@ -127,14 +127,14 @@ impl Hook {
                 can.pos += pull * (1.00 - can_dist);
             }
 
-            *vel *= 0.98;
+            *vel *= 0.9999;
             *end += *vel;
         }
     }
 
     fn release(&mut self, can: &mut Can) {
         if let Hook::Locked { vel, .. } = *self {
-            //can.vel += vel * 1.4;
+            can.vel += vel * 1.4;
             self.retract();
         }
     }
