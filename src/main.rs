@@ -13,6 +13,8 @@ use can::{Can, Cantainer};
 use std::f32::consts::{FRAC_2_PI, FRAC_PI_2};
 use math::*;
 
+/// How deep in he claw what's being held should go.
+const GRIP_DEPTH: f32 = 0.88;
 #[derive(Copy, Clone)]
 enum Hook {
     Retracting {
@@ -93,9 +95,9 @@ impl Hook {
 
     fn lock(&mut self, dock: Vec2, can_index: usize, can: &mut Can) {
         if let Hook::Launched { pos, facing, .. } = *self {
-            let can_offset = (pos - can.pos).normalize();
+            let can_offset = (pos - can.pos).normalize() * GRIP_DEPTH;
             *self = Hook::Locked {
-                facing: -can_offset,
+                facing: -can_offset.normalize(),
                 chain_length: (dock - pos).length() + 0.5,
                 end: can.pos + can_offset,
                 vel: Vec2::zero(),
@@ -121,13 +123,13 @@ impl Hook {
             let delta = can.pos - *end;
             let can_dist = delta.length();
 
-            if (can_dist - 1.0).abs() >= f32::EPSILON {
+            if (can_dist - GRIP_DEPTH).abs() > f32::EPSILON {
                 let pull = delta / can_dist;
                 *facing = pull;
-                can.pos += pull * (1.00 - can_dist);
+                can.pos += pull * (GRIP_DEPTH - can_dist);
             }
 
-            *vel *= 0.99;
+            *vel *= 0.985;
             *end += *vel;
         }
     }
@@ -165,7 +167,7 @@ impl Hook {
             Hook::Ready { facing } => hook(dock, facing, squeeze),
             Hook::Retracting { pos, facing, .. } => hook(pos, facing, squeeze),
             Hook::Launched { pos, facing, .. } => hook(pos, facing, -0.05 + squeeze),
-            Hook::Locked { end, facing, .. } => hook(end, facing, -0.255),
+            Hook::Locked { end, facing, .. } => hook(end, facing, -0.355),
         }
     }
 
