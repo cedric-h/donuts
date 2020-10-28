@@ -14,7 +14,7 @@ use std::f32::consts::{FRAC_2_PI, FRAC_PI_2};
 use math::*;
 
 /// How deep in he claw what's being held should go.
-const GRIP_DEPTH: f32 = 0.88;
+const GRIP_DEPTH: f32 = 0.92;
 #[derive(Copy, Clone)]
 enum Hook {
     Retracting {
@@ -119,6 +119,9 @@ impl Hook {
                 *vel += pull * (*chain_length - hook_dist);
             }
 
+            *vel *= 0.98;
+            *end += *vel;
+
             // drag can with hook
             let delta = can.pos - *end;
             let can_dist = delta.length();
@@ -126,9 +129,6 @@ impl Hook {
             let pull = delta / can_dist;
             *facing = pull;
             can.pos = *end + pull * GRIP_DEPTH;
-
-            *vel *= 0.98;
-            *end += *vel;
         }
     }
 
