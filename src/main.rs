@@ -123,13 +123,11 @@ impl Hook {
             let delta = can.pos - *end;
             let can_dist = delta.length();
 
-            if (can_dist - GRIP_DEPTH).abs() > f32::EPSILON {
-                let pull = delta / can_dist;
-                *facing = pull;
-                can.pos += pull * (GRIP_DEPTH - can_dist);
-            }
+            let pull = delta / can_dist;
+            *facing = pull;
+            can.pos = *end + pull * GRIP_DEPTH * 0.8;
 
-            *vel *= 0.985;
+            *vel *= 0.98;
             *end += *vel;
         }
     }

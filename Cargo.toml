@@ -9,4 +9,4 @@ donutvision = []
 showcollision = []
 
 [dependencies]
-macroquad = { git = "https://github.com/not-fl3/macroquad.git", branch = "camera_transforms_fix" }
+macroquad = { git = "https://github.com/not-fl3/macroquad.git" }
