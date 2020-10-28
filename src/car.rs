@@ -1,5 +1,5 @@
 use macroquad::prelude::*;
-use super::{Circle, vec::*};
+use super::{Circle, math::*};
 
 fn smoothstep(x: f32) -> f32 {
     if x < 0.0 {
@@ -46,17 +46,25 @@ impl Car {
     }
 
     pub fn circles(&self) -> impl Iterator<Item = Circle> {
-        std::iter::once(
-            Circle {
-                pos: self.pos + self.dir * 0.62,
-                radius: 0.775,
-                key: super::ArenaKey::Car,
-            },
-        )
+        std::iter::once(Circle {
+            pos: self.pos + self.dir * 0.62,
+            radius: 0.515,
+            key: super::ArenaKey::Car,
+        }).chain(std::iter::once(Circle {
+            pos: self.pos - self.dir * 0.65,
+            radius: 0.515,
+            key: super::ArenaKey::Car,
+        }))
+        .into_iter()
     }
     
     pub fn angle(&self) -> f32 {
         -(vec_to_angle(self.vel).to_degrees() + 90.0)
+    }
+
+    /// The place on the car where its Grappling Hook is attached.
+    pub fn dock(&self) -> Vec2 {
+        self.pos - self.dir * 0.44
     }
 
     pub fn controls(&mut self, friction: f32) {

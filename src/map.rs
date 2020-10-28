@@ -1,6 +1,6 @@
 use macroquad::prelude::*;
 use std::f32::consts::{TAU, FRAC_PI_2};
-use super::vec::*;
+use super::math::*;
 
 const TRACK_RADIUS: f32 = 35.0;
 const TRACK_WIDTH: f32 = 10.0;
@@ -69,11 +69,11 @@ impl Map {
 
     pub fn terrain_friction(&self, pos: Vec2) -> f32 {
         if pos.length() < TRACK_RADIUS - TRACK_WIDTH {
-            0.9
+            0.98
         } else if pos.length() > TRACK_RADIUS {
-            0.9
+            0.98
         } else {
-            1.0
+            0.96
         }
     }
 }

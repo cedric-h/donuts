@@ -4,7 +4,7 @@ use super::{Circle, ArenaKey};
 #[derive(Clone)]
 pub struct Can {
     pub pos: Vec2,
-    vel: Vec2,
+    pub vel: Vec2,
 }
 impl Can {
     pub fn new(pos: Vec2) -> Self {
@@ -28,7 +28,7 @@ impl Can {
     }
 
     pub fn knockback(&mut self, normal: Vec2) {
-        self.vel += normal * 0.04;
+        self.vel += normal;
     }
 }
 
@@ -61,7 +61,7 @@ impl Cantainer {
     pub fn circles(&self) -> impl Iterator<Item = Circle> + '_ {
         self.cans.iter().enumerate().map(|(i, c)| Circle {
             pos: c.pos,
-            radius: 1.0,
+            radius: 0.5,
             key: ArenaKey::Can(i),
         })
     }

@@ -8,6 +8,16 @@ pub fn angle_to_vec(angle: f32) -> Vec2 {
     vec2(x, y)
 }
 
+pub fn smoothstep(t: f32) -> f32 {
+    if t < 0.0 {
+        0.0
+    } else if t > 1.0 {
+        1.0
+    } else {
+        3.0 * t.powi(2) - 2.0 * t.powi(3)
+    }
+}
+
 #[test]
 fn angle_to_vec_to_angle() {
     macro_rules! assert_f32_eq {

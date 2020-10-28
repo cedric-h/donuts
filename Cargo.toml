@@ -6,6 +6,7 @@ edition = "2018"
 
 [features]
 donutvision = []
+showcollision = []
 
 [dependencies]
-macroquad = { git = "https://github.com/cedric-h/macroquad.git", branch = "noskew2" }
+macroquad = { git = "https://github.com/not-fl3/macroquad.git", branch = "camera_transforms_fix" }

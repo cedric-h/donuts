@@ -8,13 +8,14 @@ pub struct Circle {
 }
 #[derive(Copy, Clone, PartialEq)]
 pub enum ArenaKey {
+    Hook,
     Car,
     Can(usize),
 }
 pub struct Collision {
     pub members: [ArenaKey; 2],
     pub normal: Vec2,
-    //depth: f32,
+    pub depth: f32,
 }
 
 pub struct CircleArena {
@@ -40,11 +41,12 @@ impl CircleArena {
                 if c0.key != c1.key {
                     let delta = c0.pos - c1.pos;
                     let dist = delta.length();
-                    if dist < c0.radius || dist < c1.radius {
+                    let depth = (c0.radius + c1.radius) - dist;
+                    if depth > 0.0 {
                         collided.push(Collision {
                             normal: delta.normalize(),
                             members: [c0.key, c1.key],
-                            //depth: dbg!(c0.radius.max(c1.radius) - dist),
+                            depth,
                         });
                     }
                 }

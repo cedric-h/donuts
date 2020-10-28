@@ -125,7 +125,7 @@ checksum = "2448f6066e80e3bfc792e9c98bf705b4b0fc6e8ef5b43e5889aff0eaa9c58743"
 [[package]]
 name = "macroquad"
 version = "0.3.0-alpha.8"
-source = "git+https://github.com/cedric-h/macroquad.git?branch=noskew2#c0628596b8cd12b72e0d02ea1f1ab83c07335bd3"
+source = "git+https://github.com/not-fl3/macroquad.git?branch=camera_transforms_fix#eb3df007ffebb66a3a13ebc1d09388b5016c7714"
 dependencies = [
  "fontdue",
  "glam",
@@ -139,7 +139,7 @@ dependencies = [
 [[package]]
 name = "macroquad_macro"
 version = "0.1.0"
-source = "git+https://github.com/cedric-h/macroquad.git?branch=noskew2#c0628596b8cd12b72e0d02ea1f1ab83c07335bd3"
+source = "git+https://github.com/not-fl3/macroquad.git?branch=camera_transforms_fix#eb3df007ffebb66a3a13ebc1d09388b5016c7714"
 
 [[package]]
 name = "miniquad"
@@ -212,7 +212,7 @@ dependencies = [
 [[package]]
 name = "quad-gl"
 version = "0.2.9"
-source = "git+https://github.com/cedric-h/macroquad.git?branch=noskew2#c0628596b8cd12b72e0d02ea1f1ab83c07335bd3"
+source = "git+https://github.com/not-fl3/macroquad.git?branch=camera_transforms_fix#eb3df007ffebb66a3a13ebc1d09388b5016c7714"
 dependencies = [
  "glam",
  "image",
