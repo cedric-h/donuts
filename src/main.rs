@@ -127,7 +127,7 @@ impl Hook {
                 can.pos += pull * (1.00 - can_dist);
             }
 
-            *vel *= 0.9999;
+            *vel *= 0.99;
             *end += *vel;
         }
     }
