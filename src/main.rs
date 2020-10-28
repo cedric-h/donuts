@@ -125,7 +125,7 @@ impl Hook {
 
             let pull = delta / can_dist;
             *facing = pull;
-            can.pos = *end + pull * GRIP_DEPTH * 0.8;
+            can.pos = *end + pull * GRIP_DEPTH;
 
             *vel *= 0.98;
             *end += *vel;
