@@ -14,7 +14,7 @@ use std::f32::consts::{FRAC_2_PI, FRAC_PI_2};
 use math::*;
 
 /// How deep in he claw what's being held should go.
-const GRIP_DEPTH: f32 = 0.92;
+const GRIP_DEPTH: f32 = 0.88;
 #[derive(Copy, Clone)]
 enum Hook {
     Retracting {
@@ -82,7 +82,7 @@ impl Hook {
                     self.retract()
                 }
             },
-            Hook::Retracting { pos, facing, reached, started } => {
+            Hook::Retracting { pos, facing, reached, started, .. } => {
                 let delta = smoothstep((get_time() - *started) as f32);
                 *pos = reached.lerp(dock, delta);
                 if delta >= 1.0 {
@@ -163,9 +163,13 @@ impl Hook {
         let squeeze = ((get_time() * 7.5).sin() as f32) * 0.01;
         match *self {
             Hook::Ready { facing } => hook(dock, facing, squeeze),
-            Hook::Retracting { pos, facing, .. } => hook(pos, facing, squeeze),
-            Hook::Launched { pos, facing, .. } => hook(pos, facing, -0.05 + squeeze),
-            Hook::Locked { end, facing, .. } => hook(end, facing, -0.355),
+            Hook::Retracting { started, pos, facing, .. } => hook(
+                pos,
+                facing,
+                lerp(-0.4, 0.0, smoothstep((get_time() - started) as f32)) + squeeze
+            ),
+            Hook::Launched { pos, facing, .. } => hook(pos, facing, -0.4 + squeeze),
+            Hook::Locked { end, facing, .. } => hook(end, facing, -0.435),
         }
     }
 

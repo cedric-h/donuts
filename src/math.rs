@@ -8,6 +8,10 @@ pub fn angle_to_vec(angle: f32) -> Vec2 {
     vec2(x, y)
 }
 
+pub fn lerp(a: f32, b: f32, t: f32) -> f32 {
+    a + (b - a) * t
+}
+
 pub fn smoothstep(t: f32) -> f32 {
     if t < 0.0 {
         0.0
