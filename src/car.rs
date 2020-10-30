@@ -24,6 +24,9 @@ pub struct Car {
     pub dir: Vec2,
     pub speed: f32,
     pub vel: Vec2,
+    pub pre_dir: Vec2,
+    pub delta_dir: Vec2,
+    pub slide_vel: Vec2,
     pub throttle_slide: ThrottleSlide,
 }
 impl Car {
@@ -36,6 +39,9 @@ impl Car {
             dir: vec2(1.0, 0.0),
             vel: vec2(0.0, 0.0),
             speed: 0.0,
+            pre_dir: vec2(1.0, 0.0),
+            delta_dir: vec2(1.0, 0.0),
+            slide_vel: vec2(0.0, 0.0),
             throttle_slide: ThrottleSlide::Nah,
         }
     }
@@ -72,6 +78,9 @@ impl Car {
             dir,
             pos,
             vel,
+            pre_dir,
+            delta_dir,
+            slide_vel,
             ..
         } = self;
         let angle = vec_to_angle(*dir);
@@ -118,8 +127,15 @@ impl Car {
             }
         };
 
-        *speed = MAX_SPEED * throttle * ((vel.dot(*dir) - 0.87).max(0.0) / 0.1);
-        *vel += *dir * 0.1 * throttle;
+        if !is_key_down(KeyCode::S) {
+            *speed = MAX_SPEED * throttle * ((vel.dot(*dir) - 0.87).max(0.0) / 0.1);
+        }
+
+        if is_key_down(KeyCode::F) {
+            *vel += *dir * 0.075 * throttle;
+        } else {
+            *vel += *dir * 0.1 * throttle;
+        }
 
         *vel = if vel.length_squared() != 0.0 {
             vel.normalize()
@@ -134,8 +150,14 @@ impl Car {
             );
         }
 
-        *speed *= friction;
+        if !is_key_down(KeyCode::F) {
+            *delta_dir = *dir - *pre_dir;
+            *speed *= friction;
+        } else {
+            *dir += *delta_dir;
+        }
         *pos += *vel * *speed;
+        *pre_dir = *dir;
     }
 
     pub fn draw(&self) {

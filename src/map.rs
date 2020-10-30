@@ -67,6 +67,14 @@ impl Map {
         })
     }
 
+    pub fn rock_spots(&self) -> impl Iterator<Item = Vec2> {
+        const MAX: usize = 50;
+        (0..MAX).map(|i| {
+            angle_to_vec((i as f32 / MAX as f32) * TAU)
+                * (TRACK_RADIUS)
+        })
+    }
+
     pub fn terrain_friction(&self, pos: Vec2) -> f32 {
         if pos.length() < TRACK_RADIUS - TRACK_WIDTH {
             0.98

@@ -11,3 +11,4 @@ showcollision = []
 [dependencies]
 macroquad = { git = "https://github.com/not-fl3/macroquad.git" }
 megaui-macroquad = { git="https://github.com/not-fl3/megaui-macroquad" }
+rand = "0.7.3"

@@ -13,6 +13,8 @@ mod hook;
 use hook::Hook;
 mod debug;
 use debug::*;
+mod rock;
+use rock::*;
 
 #[cfg(not(feature = "donutvision"))]
 const ZOOM: f32 = 8.0;
@@ -29,6 +31,7 @@ async fn main() {
     };
     let mut hook = Hook::new();
     let mut cans = Cantainer::new(map.can_spots().map(|pos| Can::new(pos)).collect());
+    let mut rocks = Rocktainer::new(map.rock_spots().map(|pos| Rock::new(pos)).collect());
     let mut debug = false;
 
     loop {
@@ -74,14 +77,15 @@ async fn main() {
         car.draw();
         hook.draw_hook(car.dock());
         cans.draw();
+        rocks.draw();
         hook.draw_chain(car.dock());
 
         #[cfg(feature = "showcollision")]
-        for c in car.circles().chain(cans.circles()).chain(hook.circles()) {
+        for c in car.circles().chain(cans.circles()).chain(hook.circles().chain(rocks.circles())) {
             draw_circle_lines(c.pos.x(), c.pos.y(), c.radius, 0.1, RED);
         }
 
-        arena.collide(car.circles().chain(cans.circles()).chain(hook.circles()));
+        arena.collide(car.circles().chain(cans.circles()).chain(hook.circles().chain(rocks.circles())));
         for Collision {
             members,
             normal,
