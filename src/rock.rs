@@ -22,7 +22,7 @@ impl Rock {
 
     fn draw(&self) {
         let (x, y) = self.pos.into();
-        draw_poly(x, y, self.sides, self.radius , self.rotation, BLACK);
+        draw_poly(x, y, self.sides, self.radius , self.rotation, GRAY);
     }
 }
 

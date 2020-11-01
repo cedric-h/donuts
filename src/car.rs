@@ -131,7 +131,7 @@ impl Car {
             *speed = MAX_SPEED * throttle * ((vel.dot(*dir) - 0.87).max(0.0) / 0.1);
         }
 
-        if is_key_down(KeyCode::F) {
+        if is_key_down(KeyCode::LeftShift) {
             *vel += *dir * 0.075 * throttle;
         } else {
             *vel += *dir * 0.1 * throttle;
@@ -143,14 +143,17 @@ impl Car {
             *vel
         };
 
-        let (l, r) = (is_key_down(KeyCode::D), is_key_down(KeyCode::A));
-        if l ^ r {
+        if is_key_down(KeyCode::D) ^ is_key_down(KeyCode::A) {
             *dir = angle_to_vec(
-                angle + PI / 216.0 * (*speed / MAX_SPEED).min(1.0) * if r { -1.0 } else { 1.0 },
+                angle + PI / 216.0 * (*speed / MAX_SPEED).min(1.0) * if is_key_down(KeyCode::A) { -1.0 } else { 1.0 },
+            );
+        } else {
+            *dir = angle_to_vec(
+                angle + PI / 216.0 * (*speed / MAX_SPEED).min(1.0) * 0.0,
             );
         }
 
-        if !is_key_down(KeyCode::F) {
+        if !is_key_down(KeyCode::LeftShift) {
             *delta_dir = *dir - *pre_dir;
             *speed *= friction;
         } else {
