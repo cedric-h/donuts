@@ -8,13 +8,11 @@ use car::Car;
 mod circle;
 use circle::{ArenaKey, Circle, CircleArena, Collision};
 mod can;
-use can::{Can, Cantainer};
+use can::{Can, Cantainer, Obj};
 mod hook;
 use hook::Hook;
 mod debug;
 use debug::*;
-mod rock;
-use rock::*;
 
 #[cfg(not(feature = "donutvision"))]
 const ZOOM: f32 = 8.0;
@@ -30,8 +28,8 @@ async fn main() {
         ..Car::new(load_texture("car.png").await)
     };
     let mut hook = Hook::new();
-    let mut cans = Cantainer::new(map.can_spots().map(|pos| Can::new(pos)).collect());
-    let mut rocks = Rocktainer::new(map.rock_spots().map(|pos| Rock::new(pos)).collect());
+    let mut cans = Cantainer::new(map.can_spots(Obj::Barrel).map(|pos| Can::new(pos, Obj::Barrel)).collect());
+    let mut rocks = Cantainer::new(map.can_spots(Obj::Rock).map(|pos| Can::new(pos, Obj::Rock)).collect());
     let mut debug = false;
 
     loop {
@@ -79,6 +77,10 @@ async fn main() {
         cans.draw();
         rocks.draw();
         hook.draw_chain(car.dock());
+
+        #[cfg(not(feature = "fpscounter"))]
+        set_default_camera();
+        draw_text(&(get_fps().to_string()), 10.0, 10.0, 24.0, BLACK);
 
         #[cfg(feature = "showcollision")]
         for c in car.circles().chain(cans.circles()).chain(hook.circles().chain(rocks.circles())) {

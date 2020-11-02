@@ -10,7 +10,6 @@ pub struct Circle {
 pub enum ArenaKey {
     Hook,
     Car,
-    Rock,
     Can(usize),
 }
 pub struct Collision {

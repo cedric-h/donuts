@@ -1,4 +1,5 @@
 use super::math::*;
+use super::can::Obj;
 use macroquad::prelude::*;
 use std::f32::consts::{FRAC_PI_2, TAU};
 
@@ -50,7 +51,7 @@ impl Map {
                     p * (v + SIZE / 2.0) + arrow_offset,
                     p * v + tip * SIZE + arrow_offset,
                     YELLOW,
-                );
+                    );
             }
         }
     }
@@ -59,20 +60,23 @@ impl Map {
         vec2(0.0, TRACK_RADIUS - TRACK_WIDTH / 4.0)
     }
 
-    pub fn can_spots(&self) -> impl Iterator<Item = Vec2> {
-        const MAX: usize = 20;
-        (0..MAX).map(|i| {
-            angle_to_vec((i as f32 / MAX as f32) * TAU)
-                * (TRACK_RADIUS - (TRACK_WIDTH * [-0.35, 0.3][i % 2]) - (TRACK_WIDTH / 2.0))
-        })
-    }
-
-    pub fn rock_spots(&self) -> impl Iterator<Item = Vec2> {
-        const MAX: usize = 50;
-        (0..MAX).map(|i| {
-            angle_to_vec((i as f32 / MAX as f32) * TAU)
-                * (TRACK_RADIUS)
-        })
+    pub fn can_spots(&self, obj: Obj) -> Box<dyn Iterator<Item = Vec2>>{
+        match obj {
+            Obj::Barrel => {
+                const MAX: usize = 20;
+                Box::new((0..MAX).map(|i| {
+                 angle_to_vec((i as f32 / MAX as f32) * TAU)
+                 * (TRACK_RADIUS - (TRACK_WIDTH * [-0.35, 0.3][i % 2]) - (TRACK_WIDTH / 2.0))
+             }))
+            }
+            Obj::Rock => {
+                const MAX: usize = 50;
+                Box::new((0..MAX).map(|i| {
+                    angle_to_vec((i as f32 / MAX as f32) * TAU)
+                    * (TRACK_RADIUS)
+                }))
+            }
+        }
     }
 
     pub fn terrain_friction(&self, pos: Vec2) -> f32 {
