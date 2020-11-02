@@ -5,55 +5,55 @@ use macroquad::prelude::*;
 pub struct Can {
     pub pos: Vec2,
     pub vel: Vec2,
-    pub obj: Obj,
+    pub CanType: CanType,
 }
 
 #[derive(Clone)]
-pub enum Obj {
+pub enum CanType {
     Barrel,
     Rock,
 }
 
 impl Can {
-    pub fn new(pos: Vec2, obji: Obj) -> Self {
+    pub fn new(pos: Vec2, CanTypei: CanType) -> Self {
         Self {
             pos,
             vel: Vec2::zero(),
-            obj: obji,
+            CanType: CanTypei,
         }
     }
 
     fn draw(&self) {
         let (x, y) = self.pos.into();
-        match self.obj {
-            Obj::Barrel => {
+        match self.CanType {
+            CanType::Barrel => {
                 draw_circle(x, y, 0.5, DARKBROWN);
                 draw_rectangle(x, y - 0.5, 0.44, 1.0, DARKBROWN);
                 draw_circle(x + 0.44, y, 0.5, BROWN);
             }
-            Obj::Rock => {
+            CanType::Rock => {
                 draw_circle(x, y, 0.5, GRAY);
             }
         }
     }
 
     pub fn slide(&mut self, friction: f32) {
-        let Self { pos, vel, obj } = self;
-        match self.obj {
-            Obj::Barrel => {
+        let Self { pos, vel, CanType } = self;
+        match self.CanType {
+            CanType::Barrel => {
                 *vel *= friction;
                 *pos += *vel;
             }
-            Obj::Rock => {}
+            CanType::Rock => {}
         }
     }
 
     pub fn knockback(&mut self, normal: Vec2) {
-        match self.obj {
-            Obj::Barrel => {
+        match self.CanType {
+            CanType::Barrel => {
                 self.vel += normal;
             }
-            Obj::Rock => {}
+            CanType::Rock => {}
         }
     }
 }

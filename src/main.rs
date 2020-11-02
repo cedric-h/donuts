@@ -8,7 +8,7 @@ use car::Car;
 mod circle;
 use circle::{ArenaKey, Circle, CircleArena, Collision};
 mod can;
-use can::{Can, Cantainer, Obj};
+use can::{Can, Cantainer, CanType};
 mod hook;
 use hook::Hook;
 mod debug;
@@ -28,8 +28,13 @@ async fn main() {
         ..Car::new(load_texture("car.png").await)
     };
     let mut hook = Hook::new();
-    let mut cans = Cantainer::new(map.can_spots(Obj::Barrel).map(|pos| Can::new(pos, Obj::Barrel)).collect());
-    let mut rocks = Cantainer::new(map.can_spots(Obj::Rock).map(|pos| Can::new(pos, Obj::Rock)).collect());
+    let mut cans = Cantainer::new(
+        map
+        .can_spots(CanType::Barrel)
+        .map(|pos| Can::new(pos, CanType::Barrel))
+        .chain(map.can_spots(CanType::Rock).map(|pos| Can::new(pos, CanType::Rock)))
+        .collect()
+        );
     let mut debug = false;
 
     loop {
@@ -75,7 +80,6 @@ async fn main() {
         car.draw();
         hook.draw_hook(car.dock());
         cans.draw();
-        rocks.draw();
         hook.draw_chain(car.dock());
 
         #[cfg(feature = "fpscounter")]
@@ -89,7 +93,7 @@ async fn main() {
             draw_circle_lines(c.pos.x(), c.pos.y(), c.radius, 0.1, RED);
         }
 
-        arena.collide(car.circles().chain(cans.circles()).chain(hook.circles().chain(rocks.circles())));
+        arena.collide(car.circles().chain(cans.circles()).chain(hook.circles()));
         for Collision {
             members,
             normal,
