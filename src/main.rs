@@ -78,9 +78,11 @@ async fn main() {
         rocks.draw();
         hook.draw_chain(car.dock());
 
-        #[cfg(not(feature = "fpscounter"))]
-        set_default_camera();
-        draw_text(&(get_fps().to_string()), 10.0, 10.0, 24.0, BLACK);
+        #[cfg(feature = "fpscounter")]
+        {
+            set_default_camera();
+            draw_text(&(get_fps().to_string()), 10.0, 10.0, 24.0, BLACK);
+        }
 
         #[cfg(feature = "showcollision")]
         for c in car.circles().chain(cans.circles()).chain(hook.circles().chain(rocks.circles())) {
