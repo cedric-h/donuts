@@ -1,5 +1,5 @@
 use super::math::*;
-use super::can::CanType;
+use super::can::Kind;
 use macroquad::prelude::*;
 use std::f32::consts::{FRAC_PI_2, TAU};
 
@@ -60,16 +60,16 @@ impl Map {
         vec2(0.0, TRACK_RADIUS - TRACK_WIDTH / 4.0)
     }
 
-    pub fn can_spots(&self, CanType: CanType) -> Box<dyn Iterator<Item = Vec2>>{
-        match CanType {
-            CanType::Barrel => {
+    pub fn can_spots(&self, Kind: Kind) -> Box<dyn Iterator<Item = Vec2>>{
+        match Kind {
+            Kind::Barrel => {
                 const MAX: usize = 20;
                 Box::new((0..MAX).map(|i| {
                  angle_to_vec((i as f32 / MAX as f32) * TAU)
                  * (TRACK_RADIUS - (TRACK_WIDTH * [-0.35, 0.3][i % 2]) - (TRACK_WIDTH / 2.0))
              }))
             }
-            CanType::Rock => {
+            Kind::Rock => {
                 const MAX: usize = 50;
                 Box::new((0..MAX).map(|i| {
                     angle_to_vec((i as f32 / MAX as f32) * TAU)

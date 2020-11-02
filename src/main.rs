@@ -8,7 +8,7 @@ use car::Car;
 mod circle;
 use circle::{ArenaKey, Circle, CircleArena, Collision};
 mod can;
-use can::{Can, Cantainer, CanType};
+use can::{Can, Cantainer, Kind};
 mod hook;
 use hook::Hook;
 mod debug;
@@ -30,9 +30,9 @@ async fn main() {
     let mut hook = Hook::new();
     let mut cans = Cantainer::new(
         map
-        .can_spots(CanType::Barrel)
-        .map(|pos| Can::new(pos, CanType::Barrel))
-        .chain(map.can_spots(CanType::Rock).map(|pos| Can::new(pos, CanType::Rock)))
+        .can_spots(Kind::Barrel)
+        .map(|pos| Can::new(pos, Kind::Barrel))
+        .chain(map.can_spots(Kind::Rock).map(|pos| Can::new(pos, Kind::Rock)))
         .collect()
         );
     let mut debug = false;
